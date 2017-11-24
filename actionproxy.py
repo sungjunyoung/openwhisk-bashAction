@@ -153,12 +153,12 @@ class ActionRunner:
             e = e.decode('utf-8')
 
         # get the last line of stdout, even if empty
-        lastNewLine = o.rfind('\n', 0, len(o)-1)
+        lastNewLine = o.rfind('\n', 0, len(o) - 1)
         if lastNewLine != -1:
             # this is the result string to JSON parse
-            lastLine = o[lastNewLine+1:].strip()
+            lastLine = o[lastNewLine + 1:].strip()
             # emit the rest as logs to stdout (including last new line)
-            sys.stdout.write(o[:lastNewLine+1])
+            sys.stdout.write(o[:lastNewLine + 1])
         else:
             # either o is empty or it is the result string
             lastLine = o.strip()
@@ -174,7 +174,7 @@ class ActionRunner:
             else:
                 return error(lastLine)
         except Exception:
-            return error(lastLine)
+            return 200, {'result': lastLine}
 
     # initialize code from inlined string
     def initCodeFromString(self, message):
@@ -194,6 +194,7 @@ class ActionRunner:
         except Exception as e:
             print('err', str(e))
             return False
+
 
 proxy = flask.Flask(__name__)
 proxy.debug = False
@@ -271,6 +272,7 @@ def main():
     port = int(os.getenv('FLASK_PROXY_PORT', 8080))
     server = WSGIServer(('', port), proxy, log=None)
     server.serve_forever()
+
 
 if __name__ == '__main__':
     setRunner(ActionRunner())
