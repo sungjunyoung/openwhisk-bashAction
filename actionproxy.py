@@ -127,9 +127,10 @@ class ActionRunner:
 
         try:
             input = json.dumps(args)
+            input_json = json.loads(input)
 
-            for key in json.loads(input):
-                os.environ[key] = input[key]
+            for key in input_json:
+                os.environ[str(key)] = input_json[key]
 
             p = subprocess.Popen(
                 [self.binary],
