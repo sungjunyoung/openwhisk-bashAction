@@ -113,6 +113,20 @@ class ActionRunner:
                 env['__OW_%s' % p.upper()] = message[p]
         return env
 
+    def envParsor(self, data, envKey):
+        if type(data) is str or type(data) is int:
+            os.environ[envKey] = str(data)
+            return
+        count = 0
+        for keyOrElement in data:
+            if type(data) is dict:
+                tempKey = envKey + '_' + keyOrElement
+                self.envParsor(data[str(keyOrElement)], tempKey)
+            elif type(data) is list:
+                tempKey = envKey + '_' + str(count)
+                self.envParsor(data[count], tempKey)
+            count += 1
+
     # runs the action, called iff self.verify() is True.
     # @param args is a JSON object representing the input to the action
     # @param env is the environment for the action to run in (defined edge
@@ -129,8 +143,7 @@ class ActionRunner:
             input = json.dumps(args)
             input_json = json.loads(input)
 
-            for key in input_json:
-                os.environ[str(key)] = input_json[key]
+            self.envParsor(input_json, "")
 
             p = subprocess.Popen(
                 [self.binary],
