@@ -113,6 +113,10 @@ class ActionRunner:
                 env['__OW_%s' % p.upper()] = message[p]
         return env
 
+    # parse json data and set environment value by JSON key recursively
+    # @param data is a JSON (python dictionary)
+    # @param envKey is environment variable's key, use for recursive action
+    # return None but this function set environment value in docker
     def envParsor(self, data, envKey):
         if type(data) is str or type(data) is int:
             os.environ[envKey] = str(data)
@@ -141,9 +145,9 @@ class ActionRunner:
 
         try:
             input = json.dumps(args)
-            input_json = json.loads(input)
+            inputJson = json.loads(input)
 
-            self.envParsor(input_json, "")
+            self.envParsor(inputJson, "")
 
             p = subprocess.Popen(
                 [self.binary],
