@@ -109,6 +109,15 @@ You can access to your JSON values from request by environment variables
         }
     }
     ```
+    
+    Response would like this
+    ```json
+    {
+        "result":"Hello World!"
+    }
+    ```
+    
+    
 ### in your openwhisk
 1. push your docker image to docker hub
 2. `wsk action create bash2action --docker <docker image tag (dockerhub)>`
