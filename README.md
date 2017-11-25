@@ -123,3 +123,6 @@ You can access to your JSON values from request by environment variables
 2. `wsk action create bash2action --docker <docker image tag (dockerhub)>`
 3. `wsk action invoke bash2action --blocking --result -p test "Hello World!"`
 
+
+## Collaborator
+[@upgle](https://github.com/upgle)
