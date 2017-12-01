@@ -63,7 +63,7 @@ You can access to your JSON values from request by environment variables
     ```bash
     # in exec
     echo $_key_0_first
-    echo $_key_1_first
+    echo $_key_1_second
  
     # value1
     # value2
