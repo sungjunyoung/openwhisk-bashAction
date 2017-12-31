@@ -117,7 +117,7 @@ class ActionRunner:
     # @param data is a JSON (python dictionary)
     # @param envKey is environment variable's key, use for recursive action
     # return None but this function set environment value in docker
-    def envParsor(self, data, envKey):
+    def envParser(self, data, envKey):
         if isinstance(data, (basestring, str, unicode)) or isinstance(data, int):
             os.environ[envKey] = str(data)
             return
@@ -125,10 +125,10 @@ class ActionRunner:
         for keyOrElement in data:
             if type(data) is dict:
                 tempKey = envKey + '_' + keyOrElement
-                self.envParsor(data[str(keyOrElement)], tempKey)
+                self.envParser(data[str(keyOrElement)], tempKey)
             elif type(data) is list:
                 tempKey = envKey + '_' + str(count)
-                self.envParsor(data[count], tempKey)
+                self.envParser(data[count], tempKey)
             count += 1
 
     # runs the action, called iff self.verify() is True.
@@ -147,7 +147,7 @@ class ActionRunner:
             input = json.dumps(args)
             inputJson = json.loads(input)
 
-            self.envParsor(inputJson, "")
+            self.envParser(inputJson, "")
 
             p = subprocess.Popen(
                 [self.binary],
