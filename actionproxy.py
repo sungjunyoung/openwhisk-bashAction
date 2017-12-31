@@ -118,7 +118,7 @@ class ActionRunner:
     # @param envKey is environment variable's key, use for recursive action
     # return None but this function set environment value in docker
     def envParsor(self, data, envKey):
-        if type(data) is str or type(data) is int:
+        if isinstance(data, (basestring, str, unicode)) or isinstance(data, int):
             os.environ[envKey] = str(data)
             return
         count = 0
