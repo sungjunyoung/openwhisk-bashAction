@@ -119,6 +119,10 @@ class ActionRunner:
     # return None but this function set environment value in docker
     def envParser(self, data, envKey):
         if isinstance(data, (basestring, str, unicode)) or isinstance(data, int):
+            # support unicode
+            if isinstance(data, (unicode)):
+                data = data.encode('utf-8')
+                
             os.environ[envKey] = str(data)
             return
         count = 0
@@ -150,7 +154,7 @@ class ActionRunner:
             self.envParser(inputJson, "")
 
             p = subprocess.Popen(
-                [self.binary],
+                [self.binary, input],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -160,7 +164,7 @@ class ActionRunner:
 
         # run the process and wait until it completes.
         # stdout/stderr will always be set because we passed PIPEs to Popen
-        (o, e) = p.communicate(input=input.encode())
+        (o, e) = p.communicate()
 
         # stdout/stderr may be either text or bytes, depending on Python
         # version, so if bytes, decode to text. Note that in Python 2
