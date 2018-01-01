@@ -192,10 +192,14 @@ class ActionRunner:
             json_output = json.loads(lastLine)
             if isinstance(json_output, dict):
                 return (200, json_output)
+
+            # return int as string
+            elif isinstance(json_output, int):
+                return (200, {'result': str(json_output)})
             else:
                 return error(lastLine)
         except Exception:
-            return 200, {'result': lastLine}
+            return (200, {'result': lastLine})
 
     # initialize code from inlined string
     def initCodeFromString(self, message):
