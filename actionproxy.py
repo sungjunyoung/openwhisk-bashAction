@@ -188,7 +188,6 @@ class ActionRunner:
         if e:
             sys.stderr.write(e)
 
-        print(lastLine)
         try:
             json_output = json.loads(lastLine)
             if isinstance(json_output, dict):
