@@ -107,7 +107,7 @@ class ActionRunner:
     # @return an environment dictionary for the action process
     def env(self, message):
         # make sure to include all the env vars passed in by the invoker
-        env = os.environ
+        env = os.environ.copy()
         for p in ['api_key', 'namespace', 'action_name', 'activation_id', 'deadline']:
             if p in message:
                 env['__OW_%s' % p.upper()] = message[p]
@@ -117,22 +117,22 @@ class ActionRunner:
     # @param data is a JSON (python dictionary)
     # @param envKey is environment variable's key, use for recursive action
     # return None but this function set environment value in docker
-    def envParser(self, data, envKey):
+    def envParser(self, data, envKey, env):
         if isinstance(data, (basestring, str, unicode)) or isinstance(data, int):
             # support unicode
             if isinstance(data, (unicode)):
                 data = data.encode('utf-8')
-                
-            os.environ[envKey] = str(data)
+
+            env[envKey] = str(data)
             return
         count = 0
         for keyOrElement in data:
             if type(data) is dict:
                 tempKey = envKey + '_' + keyOrElement
-                self.envParser(data[str(keyOrElement)], tempKey)
+                self.envParser(data[str(keyOrElement)], tempKey, env)
             elif type(data) is list:
                 tempKey = envKey + '_' + str(count)
-                self.envParser(data[count], tempKey)
+                self.envParser(data[count], tempKey, env)
             count += 1
 
     # runs the action, called iff self.verify() is True.
@@ -151,7 +151,7 @@ class ActionRunner:
             input = json.dumps(args)
             inputJson = json.loads(input)
 
-            self.envParser(inputJson, "")
+            self.envParser(inputJson, "", env)
 
             p = subprocess.Popen(
                 [self.binary, input],
